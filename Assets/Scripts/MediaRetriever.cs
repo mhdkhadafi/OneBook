@@ -4,37 +4,38 @@ using SimpleJSON;
 
 public class MediaRetriever : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		Debug.Log("Starting Media Retriever");
-//		apiKey = System.IO.File.ReadAllText("Assets/Resources/hearstSecret.txt");
-//		Debug.Log(apiKey);
-		currentTitleID = 10;
-		currentMediaType = 0;
-		populateTitles();
-
-		if(currentMediaType == 0)
-			getMostRecentArticle(currentTitleID);
-		else if(currentMediaType == 1)
-			incrementPage();
-	}
-
-	// Update is called once per frame
-	void Update () {
-	}
-	
 	private string[][] titles;
 	private int currentMediaType;
 	private string[] mediaTypes;
 	private int currentTitleID;
 	private int currentArticleID = 0;
-	private int currentPage = 0;
+	private int currentPage = 1;
+	private string currentBookText;
 	private string currentPageText;
-	private int linesPerPage = 50;
-	private string apiKey = "2dyz29j4caczfam4y3bd5cpc";
+	private int charsPerPage = 200;
+	private string apiKey = "";
 	private WWW currentArticle;
-
+	
 	enum MediaTypes {Magazine, Book};
+
+	// Use this for initialization
+	void Start () {
+		Debug.Log("Starting Media Retriever");
+		TextAsset mytxtData=(TextAsset)Resources.Load("hearstSecret");
+		apiKey = mytxtData.text;
+		currentTitleID = 0;
+		currentMediaType = (int)MediaTypes.Magazine;
+		populateTitles();
+
+		if(currentMediaType == (int)MediaTypes.Magazine)
+			getMostRecentArticle(currentTitleID);
+		else if(currentMediaType == (int)MediaTypes.Book)
+			loadBook(currentTitleID);
+	}
+
+	// Update is called once per frame
+	void Update () {
+	}
 
 	private void populateTitles(){
 		mediaTypes = new string[]{"magazines", "books"};
@@ -68,10 +69,20 @@ public class MediaRetriever : MonoBehaviour {
 	// Media Type Section
 	public void incrementMediaType() {
 		currentMediaType = (currentMediaType + 1)%titles.Length;
+		currentTitleID = 0;
+		if(currentMediaType == (int)MediaTypes.Magazine)
+			getMostRecentArticle(currentTitleID);
+		else if(currentMediaType == (int)MediaTypes.Book)
+			loadBook(currentTitleID);
 	}
 	
 	public void decrementMediaType() {
 		currentMediaType = (currentMediaType - 1)%titles.Length;
+		currentTitleID = 0;
+		if(currentMediaType == (int)MediaTypes.Magazine)
+			getMostRecentArticle(currentTitleID);
+		else if(currentMediaType == (int)MediaTypes.Book)
+			loadBook(currentTitleID);
 	}
 
 	public string getCurrentMediaType(){
@@ -81,10 +92,18 @@ public class MediaRetriever : MonoBehaviour {
 	// Book / Magazine Title Section
 	public void incrementTitle() {
 		currentTitleID = (currentTitleID + 1)%titles[currentMediaType].Length;
+		if(currentMediaType == (int)MediaTypes.Magazine)
+			getMostRecentArticle(currentTitleID);
+		else if(currentMediaType == (int)MediaTypes.Book)
+			loadBook(currentTitleID);
 	}
 
 	public void decrementTitle() {
 		currentTitleID = (currentTitleID - 1)%titles[currentMediaType].Length;
+		if(currentMediaType == (int)MediaTypes.Magazine)
+			getMostRecentArticle(currentTitleID);
+		else if(currentMediaType == (int)MediaTypes.Book)
+			loadBook(currentTitleID);
 	}
 
 	public string getCurrentTitle() {
@@ -96,26 +115,32 @@ public class MediaRetriever : MonoBehaviour {
 	public void incrementPage(){
 		if(currentMediaType == (int)MediaTypes.Magazine){
 			if(currentArticleID > 0) currentArticleID--;
-			currentArticle = getArticle(currentArticleID, currentTitleID);
+//			currentArticle = getArticle(currentArticleID, currentTitleID);
 
 		} else if(currentMediaType == (int)MediaTypes.Book) {
 			currentPage++;
-			currentPageText = getPage(currentPage, currentTitleID);
+//			currentPageText = getPage(currentPage, currentTitleID);
 		}
 	}
 	
 	public void decrementPage(){
 		if(currentMediaType == (int)MediaTypes.Magazine) {
 			currentArticleID++;
-			currentArticle = getArticle(currentArticleID, currentTitleID);
+//			currentArticle = getArticle(currentArticleID, currentTitleID);
 
 		} else if (currentMediaType == (int)MediaTypes.Book) {
 			if(currentPage > 0) currentPage--;
-			currentPageText = getPage(currentPage, currentTitleID);
+//			currentPageText = getPage(currentPage, currentTitleID);
 		}
 	}
 
 	public string getCurrentPage(){
+		if(currentMediaType == (int)MediaTypes.Magazine) {
+			currentArticle = getArticle(currentArticleID, currentTitleID);
+			
+		} else if (currentMediaType == (int)MediaTypes.Book) {
+			currentPageText = getPage(currentPage);
+		}	
 		return currentPageText;
 	}
 
@@ -146,29 +171,19 @@ public class MediaRetriever : MonoBehaviour {
 		}
 	}
 	
-	private string getPage(int page, int titleID){
-		int minLine = (page - 1)*linesPerPage;
-		int maxLine = minLine + linesPerPage;
-		string text = "";
+	private string getPage(int page){
+		int minChar = Mathf.Max(0, page*charsPerPage);
+		int maxChar = Mathf.Min(minChar + charsPerPage, currentBookText.Length - 1);
 
-		using (var reader = new System.IO.StreamReader("Assets/Books/" + titles[currentMediaType][titleID] + ".txt"))
-		{
-			int lineCount = 0;
+		return currentBookText.Substring(minChar, maxChar);
+	}
 
-			while (!reader.EndOfStream && lineCount <= maxLine)
-			{
-				var line = reader.ReadLine();
-				if (string.IsNullOrEmpty(line))
-					continue;
-				
-				if (lineCount > minLine)
-					text += line;
-
-				lineCount++;
-			}
-		}
-
-		return text;
+	private void loadBook(int titleID){
+		TextAsset bookText =(TextAsset)Resources.Load(titles[currentMediaType][titleID]);
+		currentBookText = bookText.text;
+		currentTitleID = titleID;
+		currentPage = 1;
+		currentPageText = getPage(currentPage);
 	}
 	
 //	void OnGUI(){
