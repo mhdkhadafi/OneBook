@@ -19,7 +19,7 @@ public class BookText : MonoBehaviour {
 		
 		MediaRetriever mr = GetComponent<MediaRetriever> ();
 		
-		string txt = mr.getCurrentPage ();
+		string txt = mr.getCurrentBook ();
 		Debug.Log ("article::" + txt);
 		//		TextAsset mytxtData=(TextAsset)Resources.Load("The Wolf and the Lamb");
 		//		string txt = mytxtData.text;
@@ -33,8 +33,8 @@ public class BookText : MonoBehaviour {
 		TextMesh tm = GetComponent<TextMesh> ();
 		
 		MediaRetriever mr = GetComponent<MediaRetriever> ();
-		mr.incrementPage ();
-		string txt = mr.getCurrentPage ();
+//		mr.incrementPage ();
+		string txt = mr.getCurrentBook ();
 		//		Debug.Log (txt);
 		//		TextAsset mytxtData=(TextAsset)Resources.Load("The Wolf and the Lamb");
 		//		string txt = mytxtData.text;
