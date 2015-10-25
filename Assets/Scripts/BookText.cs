@@ -5,15 +5,57 @@ using System.Text.RegularExpressions;
 public class BookText : MonoBehaviour {
 
 	public string location;
+	private string currentBook;
+	private string currentArticle;
+	private int currentLeftPage = 0;
+	private int currentMediaType;
 
 	// Use this for initialization
 	void Start () {
+		MediaRetriever mr = GameObject.Find("Retriever").GetComponent<MediaRetriever> ();
+		currentMediaType = mr.getCurrentMediaType();
+		if(currentMediaType == (int)MediaRetriever.MediaTypes.Magazine){
+			currentArticle = mr.getCurrentArticle (updateCurrentPages);
+		} else if (currentMediaType == (int)MediaRetriever.MediaTypes.Book) {
+			currentBook = mr.getCurrentBook();
+		}
+
+	}
+
+	void Init () {
+
 
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		
+	}
+
+	private string cleanBook(string text){
+		text = Regex.Replace (text, @"<[^>]+>|&nbsp;", " ").Trim ();
+		text = Regex.Replace (text, @"\s{2,}", " ");
+		currentArticle = text;
+		return text;
+	}
+
+	private string getTextForCurrentPages(){
+		string pagesText = "";
+		if(currentMediaType == (int)MediaRetriever.MediaTypes.Magazine){
+			pagesText = ResolveTextSize (currentArticle, 50); // TODO: limit range
+		} else if (currentMediaType == (int)MediaRetriever.MediaTypes.Book) {
+			pagesText = ResolveTextSize (currentBook, 50); // TODO: limit range
+		}
+		return pagesText;
+
+	}
+
+	public void updateCurrentPages(string text){
+		if(currentMediaType == (int)MediaRetriever.MediaTypes.Magazine){
+			currentArticle = cleanBook(text);
+		} 
+		displayPage("splinters");
+		displayPage("rocks");
 	}
 
 	public int indexOfNth(string str, string value, int nth = 1) {
@@ -26,42 +68,44 @@ public class BookText : MonoBehaviour {
 		return offset;
 	}
 
-	public void displayBook() {
-		TextMesh tm = GetComponent<TextMesh> ();
-		
-		MediaRetriever mr = GetComponent<MediaRetriever> ();
-		
+	public void displayPage(string pageName) {
 
-		string txt = mr.getCurrentPage ();
-		string noHTML = Regex.Replace (txt, @"<[^>]+>|&nbsp;", " ").Trim ();
-		string noHTMLNormalised = Regex.Replace (noHTML, @"\s{2,}", " ");
-		string lineBrokenText = ResolveTextSize (noHTMLNormalised, 50);
+		string pageText = getTextForCurrentPages();
 
-		if (location == "left") {
-			//		Debug.Log ("article::" + txt);
-			//		TextAsset mytxtData=(TextAsset)Resources.Load("The Wolf and the Lamb");
-			//		string txt = mytxtData.text;
-
-			string cutTextLeft = lineBrokenText.Substring (0, indexOfNth (lineBrokenText, "\n", 29));
-			tm.text = cutTextLeft;
-		} else {
-			string cutTextRight = lineBrokenText.Substring (indexOfNth (lineBrokenText, "\n", 29)+1, indexOfNth (lineBrokenText, "\n", 29));
-			tm.text = cutTextRight;
+		string objectName = "";
+		switch(pageName){
+		case "splinters":
+			objectName = "PageTextRight";
+			pageText = pageText.Substring (indexOfNth (pageText, "\n", 29)+1, indexOfNth (pageText, "\n", 29));
+			break;
+			
+		case "rocks":
+			objectName = "PageTextLeft";
+			pageText = pageText.Substring (0, indexOfNth (pageText, "\n", 29));
+			break;
+			
 		}
+
+		updatePage(objectName, pageText);
+	}
+
+	private void updatePage(string objectName, string pageText){
+		TextMesh tm = GameObject.Find(objectName).GetComponent<TextMesh> ();
+		tm.text = pageText;
 	}
 	
 	public void changeBook() {
-		TextMesh tm = GetComponent<TextMesh> ();
+		TextMesh tm = GameObject.Find("pageText").GetComponent<TextMesh> ();
 		
 		MediaRetriever mr = GetComponent<MediaRetriever> ();
-//		mr.incrementPage ();
-		string txt = mr.getCurrentBook ();
-		//		Debug.Log (txt);
-		//		TextAsset mytxtData=(TextAsset)Resources.Load("The Wolf and the Lamb");
-		//		string txt = mytxtData.text;
-		string noHTML = Regex.Replace(txt, @"<[^>]+>|&nbsp;", " ").Trim();
-		string noHTMLNormalised = Regex.Replace(noHTML, @"\s{2,}", " ");
-		tm.text = ResolveTextSize(noHTML, 50);
+		mr.incrementTitle();
+		if(currentMediaType == (int)MediaRetriever.MediaTypes.Magazine){
+			currentArticle = mr.getCurrentArticle (updateCurrentPages);
+		} else if (currentMediaType == (int)MediaRetriever.MediaTypes.Book) {
+			currentBook = mr.getCurrentBook ();
+		}
+
+		tm.text = mr.getCurrentTitle();
 		tm.richText = true;
 	}
 	

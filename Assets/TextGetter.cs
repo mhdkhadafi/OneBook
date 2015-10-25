@@ -10,7 +10,7 @@ public class TextGetter : MonoBehaviour {
 		
 		MediaRetriever mr = GetComponent<MediaRetriever> ();
 		
-		string txt = mr.getCurrentPage ();
+		string txt = "random";//mr.getCurrentArticle ();
 		Debug.Log ("article::" + txt);
 		//		TextAsset mytxtData=(TextAsset)Resources.Load("The Wolf and the Lamb");
 		//		string txt = mytxtData.text;

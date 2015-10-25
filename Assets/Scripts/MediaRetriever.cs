@@ -14,20 +14,24 @@ public class MediaRetriever : MonoBehaviour {
 	private string currentArticleText;
 	private string apiKey = "";
 	private WWW currentArticle;
+	private bool currentArticleLoading = false;
+	private bool currentBookLoaded = false;
+	private bool currentArticleLoaded = false;
+
 	
-	enum MediaTypes {Magazine, Book};
+	public enum MediaTypes {Magazine, Book};
 
 	// Use this for initialization
 	void Start () {
 		Debug.Log("Starting Media Retriever");
 		TextAsset mytxtData=(TextAsset)Resources.Load("hearstSecret");
 		apiKey = mytxtData.text;
-		currentTitleID = 10;
+		currentTitleID = 0;
 		currentMediaType = (int)MediaTypes.Magazine;
 		populateTitles();
 
 		if(currentMediaType == (int)MediaTypes.Magazine)
-			loadMostRecentArticle(currentTitleID);
+			loadMostRecentArticle(currentTitleID, null);
 		else if(currentMediaType == (int)MediaTypes.Book)
 			loadBook(currentTitleID);
 	}
@@ -70,7 +74,7 @@ public class MediaRetriever : MonoBehaviour {
 		currentMediaType = (currentMediaType + 1)%titles.Length;
 		currentTitleID = 0;
 		if(currentMediaType == (int)MediaTypes.Magazine)
-			loadMostRecentArticle(currentTitleID);
+			loadMostRecentArticle(currentTitleID, null);
 		else if(currentMediaType == (int)MediaTypes.Book)
 			loadBook(currentTitleID);
 	}
@@ -79,28 +83,30 @@ public class MediaRetriever : MonoBehaviour {
 		currentMediaType = (currentMediaType - 1)%titles.Length;
 		currentTitleID = 0;
 		if(currentMediaType == (int)MediaTypes.Magazine)
-			loadMostRecentArticle(currentTitleID);
+			loadMostRecentArticle(currentTitleID, null);
 		else if(currentMediaType == (int)MediaTypes.Book)
 			loadBook(currentTitleID);
 	}
 
-	public string getCurrentMediaType(){
-		return mediaTypes[currentMediaType];
+	public int getCurrentMediaType(){
+		return currentMediaType;
 	}
 
 	// Book / Magazine Title Section
 	public void incrementTitle() {
+		currentArticleLoaded = false;
 		currentTitleID = (currentTitleID + 1)%titles[currentMediaType].Length;
 		if(currentMediaType == (int)MediaTypes.Magazine)
-			loadMostRecentArticle(currentTitleID);
+			loadMostRecentArticle(currentTitleID, null);
 		else if(currentMediaType == (int)MediaTypes.Book)
 			loadBook(currentTitleID);
 	}
 
 	public void decrementTitle() {
+		currentArticleLoaded = false;
 		currentTitleID = (currentTitleID - 1)%titles[currentMediaType].Length;
 		if(currentMediaType == (int)MediaTypes.Magazine)
-			loadMostRecentArticle(currentTitleID);
+			loadMostRecentArticle(currentTitleID, null);
 		else if(currentMediaType == (int)MediaTypes.Book)
 			loadBook(currentTitleID);
 	}
@@ -119,8 +125,9 @@ public class MediaRetriever : MonoBehaviour {
 		currentArticleID++;
 	}
 
-	public string getCurrentArticle(){
-		loadArticle(currentArticleID, currentTitleID);
+	public string getCurrentArticle(System.Action<string> onComplete){
+		if(!currentArticleLoading)
+			loadArticle(currentArticleID, currentTitleID, onComplete);
 		return currentArticleText;
 	}
 
@@ -130,27 +137,34 @@ public class MediaRetriever : MonoBehaviour {
 
 	// PRIVATE FUNCTIONS //
 
-	private void loadArticle(int articleID, int titleID){
+	private void loadArticle(int articleID, int titleID, System.Action<string> onComplete){
 		string title = titles[currentMediaType][titleID];
 		string url = "https://" + title + ".hearst.io/api/v1/articles?id=" + articleID.ToString() + "&all_images=0&get_image_cuts=0&ignore_cache=0&_key=" + apiKey;
 			
-		currentArticle = GET (url, extractArticle);
+		currentArticleLoading = true;
+
+		currentArticle = GET (url, extractArticle, onComplete);
 
 	}
 
-	private void loadMostRecentArticle(int titleID){
+	private void loadMostRecentArticle(int titleID, System.Action<string> onComplete){
 		string title = titles[currentMediaType][titleID];
 		string url = "https://" + title + ".hearst.io/api/v1/articles?visibility=1&all_images=0&get_image_cuts=0&ignore_cache=0&limit=1&order_by=date+desc&_key=" + apiKey;
 
-		currentArticle = GET (url, extractArticle);
+		currentArticle = GET (url, extractArticle, onComplete);
 	}
 
-	private void extractArticle(){
+	private void extractArticle(System.Action<string> onComplete){
 		Debug.Log("article received");
 		var js = JSON.Parse(currentArticle.text);
 		var item = js["items"][0];
-		if(int.TryParse(item["id"], out currentArticleID)){
+		var id = item["id"];
+		if(int.TryParse(id, out currentArticleID)){
+			currentArticleLoading = false;
+			currentArticleLoaded = true;
 			currentArticleText = item["body"];
+			if(onComplete != null)
+				onComplete(currentArticleText);
 			Debug.Log(currentArticleText);
 		} else {
 			Debug.LogError("Failed to Parse Article ID");
@@ -165,24 +179,25 @@ public class MediaRetriever : MonoBehaviour {
 	}
 	
 
-	void OnGUI(){
-		GUIStyle style = new GUIStyle();
-		style.richText = true;
-		GUILayout.Label(currentArticleText);
-	}
+//	void OnGUI(){
+//		GUIStyle style = new GUIStyle();
+//		style.richText = true;
+//		GUILayout.Label(currentArticleText);
+//	}
 	
-	private WWW GET(string url, System.Action onComplete ) {
+	private WWW GET(string url, System.Action<System.Action<string>> localComplete, System.Action<string> onComplete ) {
 		
 		WWW www = new WWW (url);
-		StartCoroutine (WaitForRequest (www, onComplete));
+		StartCoroutine (WaitForRequest (www, localComplete, onComplete));
 		return www;
 	}
 	
-	private IEnumerator WaitForRequest(WWW www, System.Action onComplete) {
+	private IEnumerator WaitForRequest(WWW www, System.Action<System.Action<string>> localComplete, System.Action<string> onComplete) {
 		yield return www;
 		// check for errors
 		if (www.error == null) {
-			onComplete();
+			currentArticle = www;
+			localComplete(onComplete);
 		} else {
 			Debug.Log (www.error);
 		}

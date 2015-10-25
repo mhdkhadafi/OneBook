@@ -85,8 +85,8 @@ namespace Vuforia
 
 			Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " found");
 
-			BookText bt = GetComponentInChildren<BookText> ();
-			bt.displayBook ();
+			BookText bt = GameObject.Find("Retriever").GetComponent<BookText> ();
+			bt.displayPage(mTrackableBehaviour.TrackableName);
         }
 
 
