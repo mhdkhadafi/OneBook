@@ -10,14 +10,14 @@ public class MediaRetriever : MonoBehaviour {
 		TextAsset mytxtData=(TextAsset)Resources.Load("hearstSecret");
 		apiKey = mytxtData.text;
 
-		currentTitleID = 10;
-		currentMediaType = (int)MediaTypes.Magazine;
+		currentTitleID = 0;
+		currentMediaType = (int)MediaTypes.Book;
 		populateTitles();
 
 		if(currentMediaType == (int)MediaTypes.Magazine)
 			getMostRecentArticle(currentTitleID);
 		else if(currentMediaType == (int)MediaTypes.Book)
-			incrementPage();
+			getCurrentPage();
 	}
 
 	// Update is called once per frame
@@ -29,7 +29,7 @@ public class MediaRetriever : MonoBehaviour {
 	private string[] mediaTypes;
 	private int currentTitleID;
 	private int currentArticleID = 0;
-	private int currentPage = 0;
+	private int currentPage = 1;
 	private string currentBookText;
 	private string currentPageText;
 	private int charsPerPage = 500;
@@ -102,26 +102,32 @@ public class MediaRetriever : MonoBehaviour {
 	public void incrementPage(){
 		if(currentMediaType == (int)MediaTypes.Magazine){
 			if(currentArticleID > 0) currentArticleID--;
-			currentArticle = getArticle(currentArticleID, currentTitleID);
+//			currentArticle = getArticle(currentArticleID, currentTitleID);
 
 		} else if(currentMediaType == (int)MediaTypes.Book) {
 			currentPage++;
-			currentPageText = getPage(currentPage, currentTitleID);
+//			currentPageText = getPage(currentPage, currentTitleID);
 		}
 	}
 	
 	public void decrementPage(){
 		if(currentMediaType == (int)MediaTypes.Magazine) {
 			currentArticleID++;
-			currentArticle = getArticle(currentArticleID, currentTitleID);
+//			currentArticle = getArticle(currentArticleID, currentTitleID);
 
 		} else if (currentMediaType == (int)MediaTypes.Book) {
-			if(currentPage > 0) currentPage--;
-			currentPageText = getPage(currentPage, currentTitleID);
+			if(currentPage > 1) currentPage--;
+//			currentPageText = getPage(currentPage, currentTitleID);
 		}
 	}
 
 	public string getCurrentPage(){
+		if(currentMediaType == (int)MediaTypes.Magazine) {
+			currentArticle = getArticle(currentArticleID, currentTitleID);
+			
+		} else if (currentMediaType == (int)MediaTypes.Book) {
+			currentPageText = getPage(currentPage, currentTitleID);
+		}	
 		return currentPageText;
 	}
 
@@ -137,7 +143,6 @@ public class MediaRetriever : MonoBehaviour {
 	private void getMostRecentArticle(int titleID){
 		string title = titles[currentMediaType][titleID];
 		string url = "https://" + title + ".hearst.io/api/v1/articles?visibility=1&all_images=0&get_image_cuts=0&ignore_cache=0&limit=1&order_by=date+desc&_key=" + apiKey;
-		Debug.Log (url);
 		currentArticle = GET (url, generateTexture);
 	}
 
@@ -154,15 +159,18 @@ public class MediaRetriever : MonoBehaviour {
 	}
 	
 	private string getPage(int page, int titleID){
-		int minChar = (page - 1)*charsPerPage;
-		int maxChar = minChar + charsPerPage;
+		if(titleID != currentTitleID || currentBookText == null)
+			loadBook(titleID);
+
+		int minChar = Mathf.Min (0, (page - 1)*charsPerPage);
+		int maxChar = Mathf.Max(minChar + charsPerPage, currentBookText.Length);
 
 		return currentBookText.Substring(minChar, maxChar);
 	}
 
 	private void loadBook(int titleID){
-		TextAsset mytxtData=(TextAsset)Resources.Load(titles[currentMediaType][titleID]);
-		currentBookText = mytxtData.text;
+		TextAsset bookText =(TextAsset)Resources.Load(titles[currentMediaType][titleID]);
+		currentBookText = bookText.text;
 	}
 	
 //	void OnGUI(){
