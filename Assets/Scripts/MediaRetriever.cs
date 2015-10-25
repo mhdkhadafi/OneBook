@@ -9,7 +9,7 @@ public class MediaRetriever : MonoBehaviour {
 		Debug.Log("Starting Media Retriever");
 		TextAsset mytxtData=(TextAsset)Resources.Load("hearstSecret");
 		apiKey = mytxtData.text;
-
+		Debug.Log (apiKey);
 		currentTitleID = 10;
 		currentMediaType = (int)MediaTypes.Magazine;
 		populateTitles();
