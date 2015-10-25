@@ -11,6 +11,8 @@ public class BookText : MonoBehaviour {
 	private int currentLeftPage = 0;
 	private int linesPerPage = 30;
 	private int currentMediaType;
+	private string lastLeft = "vuforia1";
+	private string lastRight = "bricks";
 
 	// Use this for initialization
 	void Start () {
@@ -48,6 +50,7 @@ public class BookText : MonoBehaviour {
 			pagesTextArray = currentBookArray.GetRange(minLine, 2*linesPerPage);
 		}
 		pagesText = string.Join("/n", (string[])pagesTextArray.ToArray(typeof(string)));
+		currentLeftPage = minLine + (2 * linesPerPage);
 		return pagesText;
 
 	}
@@ -56,6 +59,8 @@ public class BookText : MonoBehaviour {
 		if(currentMediaType == (int)MediaRetriever.MediaTypes.Magazine){
 			currentArticle = cleanBook(text);
 		} 
+		displayPage("vuforia1");
+		displayPage("bricks");
 		displayPage("splinters");
 		displayPage("rocks");
 	}
@@ -74,28 +79,48 @@ public class BookText : MonoBehaviour {
 //		if(currentMediaType == (int)MediaRetriever.MediaTypes.Magazine){
 //			currentArticle = mr.getCurrentArticle (updateCurrentPages);
 //		} 
-
+		Debug.Log (lastLeft);
+		Debug.Log (lastRight);
 //		ArrayList pagesTextArray = getTextForCurrentPages();
-		string pageText = getTextForCurrentPages();
+		if ((lastLeft != pageName) || (lastRight!=pageName)) {
+			string pageText = getTextForCurrentPages ();
 
-		string objectName = "";
-		switch(pageName){
-		case "splinters":
-			objectName = "PageTextRight";
-			pageText = pageText.Substring (indexOfNth (pageText, "\n", 29)+1, indexOfNth (pageText, "\n", 29));
-//			pageText = string.Join("/n", (string[])pagesTextArray.GetRange(linesPerPage, linesPerPage - 1).ToArray(typeof(string)));
-			break;
-			
-		case "rocks":
-			objectName = "PageTextLeft";
-			pageText = pageText.Substring (0, indexOfNth (pageText, "\n", 29));
-//			pageText = string.Join("/n", (string[])pagesTextArray.GetRange(0, linesPerPage - 1).ToArray(typeof(string)));
+			string objectName = "";
 
-			break;
-			
+			switch (pageName) {
+			case "bricks":
+				lastRight = "bricks";
+				objectName = "PageTextRight2";
+				pageText = pageText.Substring (indexOfNth (pageText, "\n", 29) + 1, indexOfNth (pageText, "\n", 29));
+	//			pageText = string.Join("/n", (string[])pagesTextArray.GetRange(linesPerPage, linesPerPage - 1).ToArray(typeof(string)));
+				break;
+				
+			case "vuforia1":
+				lastLeft = "vuforia1";
+				objectName = "PageTextLeft2";
+				pageText = pageText.Substring (0, indexOfNth (pageText, "\n", 29));
+	//			pageText = string.Join("/n", (string[])pagesTextArray.GetRange(0, linesPerPage - 1).ToArray(typeof(string)));
+				break;
+
+			case "splinters":
+				lastRight = "splinters";
+				objectName = "PageTextRight";
+				pageText = pageText.Substring (indexOfNth (pageText, "\n", 29) + 1, indexOfNth (pageText, "\n", 29));
+				//			pageText = string.Join("/n", (string[])pagesTextArray.GetRange(linesPerPage, linesPerPage - 1).ToArray(typeof(string)));
+				break;
+				
+			case "rocks":
+				
+				lastLeft = "rocks";
+				objectName = "PageTextLeft";
+				pageText = pageText.Substring (0, indexOfNth (pageText, "\n", 29));
+				//			pageText = string.Join("/n", (string[])pagesTextArray.GetRange(0, linesPerPage - 1).ToArray(typeof(string)));
+				break;
+				
+			}
+
+			updatePage (objectName, pageText);
 		}
-
-		updatePage(objectName, pageText);
 	}
 
 	private void updatePage(string objectName, string pageText){
