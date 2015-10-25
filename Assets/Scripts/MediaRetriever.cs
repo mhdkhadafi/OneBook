@@ -7,10 +7,11 @@ public class MediaRetriever : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		Debug.Log("Starting Media Retriever");
-		apiKey = System.IO.File.ReadAllText("Assets/Resources/hearstSecret.txt");
+		TextAsset mytxtData=(TextAsset)Resources.Load("hearstSecret");
+		apiKey = mytxtData.text;
 		Debug.Log(apiKey);
 		currentTitleID = 10;
-		currentMediaType = 0;
+		currentMediaType = (int)MediaTypes.Magazine;
 		populateTitles();
 
 		if(currentMediaType == 0)
@@ -131,6 +132,7 @@ public class MediaRetriever : MonoBehaviour {
 	private void getMostRecentArticle(int titleID){
 		string title = titles[currentMediaType][titleID];
 		string url = "https://" + title + ".hearst.io/api/v1/articles?visibility=1&all_images=0&get_image_cuts=0&ignore_cache=0&limit=1&order_by=date+desc&_key=" + apiKey;
+		Debug.Log (url);
 		currentArticle = GET (url, generateTexture);
 	}
 

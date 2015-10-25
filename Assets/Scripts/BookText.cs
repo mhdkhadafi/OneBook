@@ -1,35 +1,47 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Text.RegularExpressions;
 
 public class BookText : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-		TextMesh tm = GetComponent<TextMesh> ();
-		//		VirtualButtonBehaviour[] vbs = GetComponentsInChildren<VirtualButtonBehaviour>();
-		//		for (int i=0; i < vbs.Length; ++i) {
-		//			Debug.Log ("Button");
-		//		}
-		//		tm.text = "Goodbye World";
-		TextAsset mytxtData=(TextAsset)Resources.Load("The Wolf and the Lamb");
-		string txt = mytxtData.text;
-		tm.text = ResolveTextSize(txt, 50);
-		//		tm.richText = true;
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		
 	}
+
+	public void displayBook() {
+		TextMesh tm = GetComponent<TextMesh> ();
+		
+		MediaRetriever mr = GetComponent<MediaRetriever> ();
+		
+		string txt = mr.getCurrentPage ();
+		Debug.Log ("article::" + txt);
+		//		TextAsset mytxtData=(TextAsset)Resources.Load("The Wolf and the Lamb");
+		//		string txt = mytxtData.text;
+		string noHTML = Regex.Replace(txt, @"<[^>]+>|&nbsp;", " ").Trim();
+		string noHTMLNormalised = Regex.Replace(noHTML, @"\s{2,}", " ");
+		tm.text = ResolveTextSize(noHTML, 50);
+		tm.richText = true;
+	}
 	
 	public void changeBook() {
-		string[] bookName = new string[] {"The Wolf and the Lamb", "The Ass and the Grasshopper", "The Bat and the Weasels"};
-		
 		TextMesh tm = GetComponent<TextMesh> ();
-		int randomNumber = Random.Range (0, 3);
-		TextAsset mytxtData=(TextAsset)Resources.Load(bookName[randomNumber]);
-		string txt = mytxtData.text;
-		tm.text = ResolveTextSize(txt, 50);
+		
+		MediaRetriever mr = GetComponent<MediaRetriever> ();
+		mr.incrementPage ();
+		string txt = mr.getCurrentPage ();
+		//		Debug.Log (txt);
+		//		TextAsset mytxtData=(TextAsset)Resources.Load("The Wolf and the Lamb");
+		//		string txt = mytxtData.text;
+		string noHTML = Regex.Replace(txt, @"<[^>]+>|&nbsp;", " ").Trim();
+		string noHTMLNormalised = Regex.Replace(noHTML, @"\s{2,}", " ");
+		tm.text = ResolveTextSize(noHTML, 50);
+		tm.richText = true;
 	}
 	
 	private string ResolveTextSize(string input, int lineLength){

@@ -83,7 +83,8 @@ namespace Vuforia
                 component.enabled = true;
             }
 
-            Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " found");
+			BookText bt = GetComponentInChildren<BookText> ();
+			bt.displayBook ();
         }
 
 
