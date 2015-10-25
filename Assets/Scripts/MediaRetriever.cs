@@ -26,12 +26,13 @@ public class MediaRetriever : MonoBehaviour {
 	private string[] mediaTypes;
 	private int currentTitleID;
 	private int currentArticleID = 0;
-	private string currentArticleText;
 	private int currentPage = 0;
 	private string currentPageText;
 	private int linesPerPage = 100;
 	private string apiKey = "";
 	private WWW currentArticle;
+
+	enum MediaTypes {Magazine, Book};
 
 	private void populateTitles(){
 		mediaTypes = new string[]{"magazines", "books"};
@@ -89,28 +90,27 @@ public class MediaRetriever : MonoBehaviour {
 	}
 
 	// Page / Article Section
-	public void incrementArticle() {
-		if(currentArticleID > 0) currentArticleID--;
-		currentArticle = getArticle(currentArticleID, currentTitleID);
-	}
-
-	public void decrementArticle() {
-		currentArticleID++;
-		currentArticle = getArticle(currentArticleID, currentTitleID);
-	}
-
-	public string getCurrentArticle() {
-		return currentArticleText;
-	}
-
+	
 	public void incrementPage(){
-		currentPage++;
-		currentPageText = getPage(currentPage, currentTitleID);
+		if(currentMediaType == (int)MediaTypes.Magazine){
+			if(currentArticleID > 0) currentArticleID--;
+			currentArticle = getArticle(currentArticleID, currentTitleID);
+
+		} else if(currentMediaType == (int)MediaTypes.Book) {
+			currentPage++;
+			currentPageText = getPage(currentPage, currentTitleID);
+		}
 	}
 	
 	public void decrementPage(){
-		if(currentPage > 0) currentPage--;
-		currentPageText = getPage(currentPage, currentTitleID);
+		if(currentMediaType == (int)MediaTypes.Magazine) {
+			currentArticleID++;
+			currentArticle = getArticle(currentArticleID, currentTitleID);
+
+		} else if (currentMediaType == (int)MediaTypes.Book) {
+			if(currentPage > 0) currentPage--;
+			currentPageText = getPage(currentPage, currentTitleID);
+		}
 	}
 
 	public string getCurrentPage(){
@@ -137,8 +137,8 @@ public class MediaRetriever : MonoBehaviour {
 		var js = JSON.Parse(currentArticle.text);
 		var item = js["items"][0];
 		if(int.TryParse(item["id"], out currentArticleID)){
-			currentArticleText = item["body"];
-			Debug.Log(currentArticleText);
+			currentPageText = item["body"];
+			Debug.Log(currentPageText);
 		} else {
 			Debug.LogError("Failed to Parse Article ID");
 		}
