@@ -7,6 +7,10 @@ public class VirtualButtonEventHandler : MonoBehaviour, IVirtualButtonEventHandl
 	TextMesh tm;
 	public Material[] m_materials;
 
+	// Material array
+	public int magazineMaterialIndex = 0;
+	public int bookMaterialIndex = 0;
+
 	// Use this for initialization
 	void Start () {
 
@@ -27,25 +31,26 @@ public class VirtualButtonEventHandler : MonoBehaviour, IVirtualButtonEventHandl
 			ip.changeBook();
 			break;
 			case "changeBook":
-				Texture2D p = new Texture2D(10, 10);
+				//Texture2D p = new Texture2D(10, 10);
 				Debug.Log ("OnButtonPressed called");
-				
-				p = Resources.Load("CatsCradleBook.Front", typeof(Texture2D)) as Texture2D;
+				Renderer r = GetComponent<MeshRenderer>();
+				r.material = m_materials[bookMaterialIndex];
+				bookMaterialIndex = bookMaterialIndex + 1;
+				//p = Resources.Load("CatsCradleBook.Front", typeof(Texture2D)) as Texture2D;
 				//		Plane plane = transform.Find ("Front").GetComponent<Plane>();
-				GameObject mt = GameObject.Find("MultiTarget");
-				Debug.Log(mt);
-				Transform go = mt.transform.Find("Front");
-				if(go!=null){
-//					Material mat = go.GetComponent<Material> ();
-//					mat.mainTexture = p;
-					foreach(Component c in go.GetComponents<Component>()){
-						Debug.Log(c);
-					}
-//					Material m = Resources.Load("CatsCradleBook.Front.mat", typeof(Material)) as Material;
-					Renderer r = go.GetComponent<MeshRenderer>();
-					r.material = m_materials[0];
-//					r.material =m;
-				}
+				//GameObject mt = GameObject.Find("MultiTarget");
+				//Debug.Log(mt);
+				//Transform go = mt.transform.Find("");
+//				if(go!=null){
+//					foreach(Component c in go.GetComponents<Component>()){
+//						Debug.Log(c);
+//					}
+////					Material m = Resources.Load("CatsCradleBook.Front.mat", typeof(Material)) as Material;
+//					Renderer r = GetComponent<MeshRenderer>();
+//					r.material = m_materials[bookMaterialIndex];
+//					bookMaterialIndex = bookMaterialIndex + 1;
+////					r.material =m;
+//				}
 				break;
 		}
 
