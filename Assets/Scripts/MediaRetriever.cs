@@ -7,6 +7,8 @@ public class MediaRetriever : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		Debug.Log("Starting Media Retriever");
+		apiKey = System.IO.File.ReadAllText("Assets/Resources/hearstSecret.txt");
+		Debug.Log(apiKey);
 		currentTitleID = 10;
 		currentMediaType = 0;
 		populateTitles();
@@ -28,7 +30,7 @@ public class MediaRetriever : MonoBehaviour {
 	private int currentArticleID = 0;
 	private int currentPage = 0;
 	private string currentPageText;
-	private int linesPerPage = 100;
+	private int linesPerPage = 50;
 	private string apiKey = "";
 	private WWW currentArticle;
 
