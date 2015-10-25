@@ -14,9 +14,9 @@ public class MediaRetriever : MonoBehaviour {
 		currentMediaType = (int)MediaTypes.Magazine;
 		populateTitles();
 
-		if(currentMediaType == 0)
+		if(currentMediaType == (int)MediaTypes.Magazine)
 			getMostRecentArticle(currentTitleID);
-		else if(currentMediaType == 1)
+		else if(currentMediaType == (int)MediaTypes.Book)
 			incrementPage();
 	}
 
