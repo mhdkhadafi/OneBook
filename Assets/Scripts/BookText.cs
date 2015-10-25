@@ -12,6 +12,8 @@ public class BookText : MonoBehaviour {
 	private int linesPerPage = 30;
 	private int charPerLine = 50;
 	private int currentMediaType;
+	private string lastLeft = "vuforia1";
+	private string lastRight = "bricks";
 
 	// Use this for initialization
 	void Start () {
@@ -39,6 +41,7 @@ public class BookText : MonoBehaviour {
 	}
 
 	private ArrayList getTextForCurrentPages(){
+		Debug.Log (currentLeftPage);
 		int minLine = currentLeftPage*linesPerPage;
 		ArrayList pagesTextArray = new ArrayList();
 
@@ -47,6 +50,7 @@ public class BookText : MonoBehaviour {
 		} else if (currentMediaType == (int)MediaRetriever.MediaTypes.Book) {
 			pagesTextArray = currentBookArray.GetRange(minLine, 2*linesPerPage);
 		}
+		currentLeftPage += 2;
 		return pagesTextArray;
 
 	}
@@ -73,26 +77,42 @@ public class BookText : MonoBehaviour {
 //		if(currentMediaType == (int)MediaRetriever.MediaTypes.Magazine){
 //			currentArticle = mr.getCurrentArticle (updateCurrentPages);
 //		} 
+		if( pageName!=lastLeft && pageName!=lastRight ){
+			ArrayList pagesTextArray;// = getTextForCurrentPages();
+			string pageText = string.Empty;
 
-		ArrayList pagesTextArray = getTextForCurrentPages();
-		string pageText = string.Empty;
+			string objectName = "";
+			switch(pageName){
+				case "splinters":
+					pagesTextArray = getTextForCurrentPages();
+					lastRight = "splinters";
+					objectName = "PageTextRight";
+					pageText = string.Join("\n", (string[])pagesTextArray.GetRange(linesPerPage, linesPerPage - 1).ToArray(typeof(string)));
+					updatePage(objectName, pageText);
 
-		string objectName = "";
-		switch(pageName){
-		case "splinters":
-			objectName = "PageTextRight";
-			pageText = string.Join("\n", (string[])pagesTextArray.GetRange(linesPerPage, linesPerPage - 1).ToArray(typeof(string)));
-			break;
-			
-		case "rocks":
-			objectName = "PageTextLeft";
-			pageText = string.Join("\n", (string[])pagesTextArray.GetRange(0, linesPerPage - 1).ToArray(typeof(string)));
+					lastLeft = "rocks";
+					objectName = "PageTextLeft";
+					pageText = string.Join("\n", (string[])pagesTextArray.GetRange(0, linesPerPage - 1).ToArray(typeof(string)));
+					updatePage(objectName, pageText);
 
-			break;
-			
+					break;
+
+				case "bricks":
+					pagesTextArray = getTextForCurrentPages();
+					lastRight = "bricks";
+					objectName = "PageTextRight2";
+					pageText = string.Join ("\n", (string[])pagesTextArray.GetRange (linesPerPage, linesPerPage - 1).ToArray (typeof(string)));
+					updatePage(objectName, pageText);
+
+					lastLeft = "vuforia1";
+					objectName = "PageTextLeft2";
+					pageText = string.Join ("\n", (string[])pagesTextArray.GetRange (0, linesPerPage - 1).ToArray (typeof(string)));
+					updatePage(objectName, pageText);
+
+					break;	
+			}
+
 		}
-
-		updatePage(objectName, pageText);
 	}
 
 	private void updatePage(string objectName, string pageText){
@@ -109,6 +129,7 @@ public class BookText : MonoBehaviour {
 			currentArticle = mr.getCurrentArticle (updateCurrentPages);
 		} else if (currentMediaType == (int)MediaRetriever.MediaTypes.Book) {
 			currentBook = mr.getCurrentBook ();
+			currentLeftPage = 0;
 		}
 
 		tm.text = mr.getCurrentTitle();
@@ -124,6 +145,7 @@ public class BookText : MonoBehaviour {
 			mr.loadMostRecentArticle(mr.currentTitleID, updateCurrentPages);
 		else if(currentMediaType == (int)MediaRetriever.MediaTypes.Book) {
 			currentBookArray = ResolveTextSize (mr.getCurrentBook(), 50);
+			currentLeftPage = 0;
 		}
 	}
 
