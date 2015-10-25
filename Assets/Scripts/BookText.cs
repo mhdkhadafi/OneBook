@@ -10,6 +10,7 @@ public class BookText : MonoBehaviour {
 	private string currentArticle;
 	private int currentLeftPage = 0;
 	private int linesPerPage = 30;
+	private int charPerLine = 50;
 	private int currentMediaType;
 
 	// Use this for initialization
@@ -37,8 +38,7 @@ public class BookText : MonoBehaviour {
 		return text;
 	}
 
-	private string getTextForCurrentPages(){
-		string pagesText = string.Empty;
+	private ArrayList getTextForCurrentPages(){
 		int minLine = currentLeftPage*linesPerPage;
 		ArrayList pagesTextArray = new ArrayList();
 
@@ -47,8 +47,7 @@ public class BookText : MonoBehaviour {
 		} else if (currentMediaType == (int)MediaRetriever.MediaTypes.Book) {
 			pagesTextArray = currentBookArray.GetRange(minLine, 2*linesPerPage);
 		}
-		pagesText = string.Join("/n", (string[])pagesTextArray.ToArray(typeof(string)));
-		return pagesText;
+		return pagesTextArray;
 
 	}
 
@@ -69,27 +68,25 @@ public class BookText : MonoBehaviour {
 		}
 		return offset;
 	}
-
+	
 	public void displayPage(string pageName) {
 //		if(currentMediaType == (int)MediaRetriever.MediaTypes.Magazine){
 //			currentArticle = mr.getCurrentArticle (updateCurrentPages);
 //		} 
 
-//		ArrayList pagesTextArray = getTextForCurrentPages();
-		string pageText = getTextForCurrentPages();
+		ArrayList pagesTextArray = getTextForCurrentPages();
+		string pageText = string.Empty;
 
 		string objectName = "";
 		switch(pageName){
 		case "splinters":
 			objectName = "PageTextRight";
-			pageText = pageText.Substring (indexOfNth (pageText, "\n", 29)+1, indexOfNth (pageText, "\n", 29));
-//			pageText = string.Join("/n", (string[])pagesTextArray.GetRange(linesPerPage, linesPerPage - 1).ToArray(typeof(string)));
+			pageText = string.Join("\n", (string[])pagesTextArray.GetRange(linesPerPage, linesPerPage - 1).ToArray(typeof(string)));
 			break;
 			
 		case "rocks":
 			objectName = "PageTextLeft";
-			pageText = pageText.Substring (0, indexOfNth (pageText, "\n", 29));
-//			pageText = string.Join("/n", (string[])pagesTextArray.GetRange(0, linesPerPage - 1).ToArray(typeof(string)));
+			pageText = string.Join("\n", (string[])pagesTextArray.GetRange(0, linesPerPage - 1).ToArray(typeof(string)));
 
 			break;
 			
