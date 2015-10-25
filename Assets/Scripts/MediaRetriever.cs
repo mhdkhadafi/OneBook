@@ -9,7 +9,7 @@ public class MediaRetriever : MonoBehaviour {
 		Debug.Log("Starting Media Retriever");
 		TextAsset mytxtData=(TextAsset)Resources.Load("hearstSecret");
 		apiKey = mytxtData.text;
-		Debug.Log(apiKey);
+
 		currentTitleID = 10;
 		currentMediaType = (int)MediaTypes.Magazine;
 		populateTitles();
@@ -30,8 +30,9 @@ public class MediaRetriever : MonoBehaviour {
 	private int currentTitleID;
 	private int currentArticleID = 0;
 	private int currentPage = 0;
+	private string currentBookText;
 	private string currentPageText;
-	private int linesPerPage = 50;
+	private int charsPerPage = 500;
 	private string apiKey = "";
 	private WWW currentArticle;
 
@@ -82,10 +83,14 @@ public class MediaRetriever : MonoBehaviour {
 	// Book / Magazine Title Section
 	public void incrementTitle() {
 		currentTitleID = (currentTitleID + 1)%titles[currentMediaType].Length;
+		if(currentMediaType == (int)MediaTypes.Book)
+			loadBook(currentTitleID);
 	}
 
 	public void decrementTitle() {
 		currentTitleID = (currentTitleID - 1)%titles[currentMediaType].Length;
+		if(currentMediaType == (int)MediaTypes.Book)
+			loadBook(currentTitleID);
 	}
 
 	public string getCurrentTitle() {
@@ -149,28 +154,15 @@ public class MediaRetriever : MonoBehaviour {
 	}
 	
 	private string getPage(int page, int titleID){
-		int minLine = (page - 1)*linesPerPage;
-		int maxLine = minLine + linesPerPage;
-		string text = "";
+		int minChar = (page - 1)*charsPerPage;
+		int maxChar = minChar + charsPerPage;
 
-		using (var reader = new System.IO.StreamReader("Assets/Books/" + titles[currentMediaType][titleID] + ".txt"))
-		{
-			int lineCount = 0;
+		return currentBookText.Substring(minChar, maxChar);
+	}
 
-			while (!reader.EndOfStream && lineCount <= maxLine)
-			{
-				var line = reader.ReadLine();
-				if (string.IsNullOrEmpty(line))
-					continue;
-				
-				if (lineCount > minLine)
-					text += line;
-
-				lineCount++;
-			}
-		}
-
-		return text;
+	private void loadBook(int titleID){
+		TextAsset mytxtData=(TextAsset)Resources.Load(titles[currentMediaType][titleID]);
+		currentBookText = mytxtData.text;
 	}
 	
 //	void OnGUI(){
