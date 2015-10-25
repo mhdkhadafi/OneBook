@@ -3,7 +3,9 @@ using System.Collections;
 using System.Text.RegularExpressions;
 
 public class BookText : MonoBehaviour {
-	
+
+	public string location;
+
 	// Use this for initialization
 	void Start () {
 
@@ -14,19 +16,38 @@ public class BookText : MonoBehaviour {
 		
 	}
 
+	public int indexOfNth(string str, string value, int nth = 1) {
+		int offset = str.IndexOf(value);
+		for (int i = 1; i < nth; i++)
+		{
+			if (offset == -1) return -1;
+			offset = str.IndexOf(value, offset + 1);
+		}
+		return offset;
+	}
+
 	public void displayBook() {
 		TextMesh tm = GetComponent<TextMesh> ();
 		
 		MediaRetriever mr = GetComponent<MediaRetriever> ();
 		
-		string txt = mr.getCurrentBook ();
-		Debug.Log ("article::" + txt);
-		//		TextAsset mytxtData=(TextAsset)Resources.Load("The Wolf and the Lamb");
-		//		string txt = mytxtData.text;
-		string noHTML = Regex.Replace(txt, @"<[^>]+>|&nbsp;", " ").Trim();
-		string noHTMLNormalised = Regex.Replace(noHTML, @"\s{2,}", " ");
-		tm.text = ResolveTextSize(noHTML, 50);
-		tm.richText = true;
+
+		string txt = mr.getCurrentPage ();
+		string noHTML = Regex.Replace (txt, @"<[^>]+>|&nbsp;", " ").Trim ();
+		string noHTMLNormalised = Regex.Replace (noHTML, @"\s{2,}", " ");
+		string lineBrokenText = ResolveTextSize (noHTMLNormalised, 50);
+
+		if (location == "left") {
+			//		Debug.Log ("article::" + txt);
+			//		TextAsset mytxtData=(TextAsset)Resources.Load("The Wolf and the Lamb");
+			//		string txt = mytxtData.text;
+
+			string cutTextLeft = lineBrokenText.Substring (0, indexOfNth (lineBrokenText, "\n", 29));
+			tm.text = cutTextLeft;
+		} else {
+			string cutTextRight = lineBrokenText.Substring (indexOfNth (lineBrokenText, "\n", 29)+1, indexOfNth (lineBrokenText, "\n", 29));
+			tm.text = cutTextRight;
+		}
 	}
 	
 	public void changeBook() {

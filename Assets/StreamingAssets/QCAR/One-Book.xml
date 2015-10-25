@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
   <Tracking>
+    <ImageTarget name="rocks" size="500.000000 349.196533" />
+    <ImageTarget name="splinters" size="500.000000 350.247528" />
+    <ImageTarget name="road" size="500.000000 349.814575" />
+    <ImageTarget name="vuforia1" size="500.000000 500.000000" />
+    <ImageTarget name="vuforia3" size="500.000000 250.000000" />
+    <ImageTarget name="edges" size="500.000000 500.000000" />
+    <ImageTarget name="scales" size="500.000000 333.333344" />
+    <ImageTarget name="holes" size="500.000000 333.333344" />
+    <ImageTarget name="Bamboo" size="500.000000 312.500000" />
+    <ImageTarget name="bricks" size="500.000000 333.333344" />
+    <ImageTarget name="wood" size="500.000000 334.668793" />
+    <ImageTarget name="pavement" size="500.000000 375.000000" />
+    <ImageTarget name="cats_back" size="2399.000000 3646.000000" />
+    <ImageTarget name="cats_front" size="2375.000000 3667.000000" />
     <ImageTarget name="book" size="2345.000000 3381.000000" />
   </Tracking>
 </QCARConfig>

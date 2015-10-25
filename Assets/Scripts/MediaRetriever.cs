@@ -22,8 +22,7 @@ public class MediaRetriever : MonoBehaviour {
 		Debug.Log("Starting Media Retriever");
 		TextAsset mytxtData=(TextAsset)Resources.Load("hearstSecret");
 		apiKey = mytxtData.text;
-
-		currentTitleID = 0;
+		currentTitleID = 10;
 		currentMediaType = (int)MediaTypes.Magazine;
 		populateTitles();
 
@@ -165,12 +164,13 @@ public class MediaRetriever : MonoBehaviour {
 		currentTitleID = titleID;
 	}
 	
+
 	void OnGUI(){
 		GUIStyle style = new GUIStyle();
 		style.richText = true;
 		GUILayout.Label(currentArticleText);
 	}
-
+	
 	private WWW GET(string url, System.Action onComplete ) {
 		
 		WWW www = new WWW (url);
