@@ -60,6 +60,9 @@ public class MediaRetriever : MonoBehaviour {
 		titles = new string[][]{magazines, books};
 	}
 
+	// PUBLIC INTERFACE //
+
+	// Media Type Section
 	public void incrementMediaType() {
 		currentMediaType = (currentMediaType + 1)%titles.Length;
 	}
@@ -71,7 +74,8 @@ public class MediaRetriever : MonoBehaviour {
 	public string getCurrentMediaType(){
 		return mediaTypes[currentMediaType];
 	}
-	
+
+	// Book / Magazine Title Section
 	public void incrementTitle() {
 		currentTitleID = (currentTitleID + 1)%titles[currentMediaType].Length;
 	}
@@ -84,6 +88,7 @@ public class MediaRetriever : MonoBehaviour {
 		return titles[currentMediaType][currentTitleID];
 	}
 
+	// Page / Article Section
 	public void incrementArticle() {
 		if(currentArticleID > 0) currentArticleID--;
 		currentArticle = getArticle(currentArticleID, currentTitleID);
@@ -93,6 +98,27 @@ public class MediaRetriever : MonoBehaviour {
 		currentArticleID++;
 		currentArticle = getArticle(currentArticleID, currentTitleID);
 	}
+
+	public string getCurrentArticle() {
+		return currentArticleText;
+	}
+
+	public void incrementPage(){
+		currentPage++;
+		currentPageText = getPage(currentPage, currentTitleID);
+	}
+	
+	public void decrementPage(){
+		if(currentPage > 0) currentPage--;
+		currentPageText = getPage(currentPage, currentTitleID);
+	}
+
+	public string getCurrentPage(){
+		return currentPageText;
+	}
+
+
+	// PRIVATE FUNCTIONS //
 
 	private WWW getArticle(int articleID, int titleID){
 		string title = titles[currentMediaType][titleID];
@@ -116,16 +142,6 @@ public class MediaRetriever : MonoBehaviour {
 		} else {
 			Debug.LogError("Failed to Parse Article ID");
 		}
-	}
-
-	public void incrementPage(){
-		currentPage++;
-		currentPageText = getPage(currentPage, currentTitleID);
-	}
-
-	public void decrementPage(){
-		if(currentPage > 0) currentPage--;
-		currentPageText = getPage(currentPage, currentTitleID);
 	}
 	
 	private string getPage(int page, int titleID){
@@ -152,11 +168,6 @@ public class MediaRetriever : MonoBehaviour {
 
 		return text;
 	}
-	
-	public string getCurrentPage(){
-		return currentPageText;
-	}
-	
 	
 //	void OnGUI(){
 //		GUIStyle style = new GUIStyle();
