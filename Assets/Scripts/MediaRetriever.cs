@@ -23,7 +23,7 @@ public class MediaRetriever : MonoBehaviour {
 		Debug.Log("Starting Media Retriever");
 		TextAsset mytxtData=(TextAsset)Resources.Load("hearstSecret");
 		apiKey = mytxtData.text;
-		currentTitleID = 0;
+		currentTitleID = 10;
 		currentMediaType = (int)MediaTypes.Magazine;
 		populateTitles();
 
@@ -160,7 +160,7 @@ public class MediaRetriever : MonoBehaviour {
 	}
 
 	private void generateTexture(){
-		Debug.Log("article received");
+//		Debug.Log("article received::" + item["id"]);
 		var js = JSON.Parse(currentArticle.text);
 		var item = js["items"][0];
 		if(int.TryParse(item["id"], out currentArticleID)){
