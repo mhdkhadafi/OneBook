@@ -18,7 +18,6 @@ public class MediaRetriever : MonoBehaviour {
 	private bool currentBookLoaded = false;
 	private bool currentArticleLoaded = false;
 
-	
 	public enum MediaTypes {Magazine, Book};
 
 	// Use this for initialization
