@@ -8,14 +8,13 @@ public class MediaRetriever : MonoBehaviour {
 	void Start () {
 		Debug.Log("Starting Media Retriever");
 		apiKey = System.IO.File.ReadAllText("Assets/Resources/hearstSecret.txt");
-		Debug.Log(apiKey);
 		currentTitleID = 10;
-		currentMediaType = 0;
+		currentMediaType = (int)MediaTypes.Magazine;
 		populateTitles();
 
-		if(currentMediaType == 0)
+		if(currentMediaType == (int)MediaTypes.Magazine)
 			getMostRecentArticle(currentTitleID);
-		else if(currentMediaType == 1)
+		else if(currentMediaType == (int)MediaTypes.Book)
 			incrementPage();
 	}
 
