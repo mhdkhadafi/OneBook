@@ -3,7 +3,7 @@ using System.Collections;
 using System.Text.RegularExpressions;
 
 public class BookText : MonoBehaviour {
-
+	
 	public string location;
 	private string currentBook;
 	private ArrayList currentBookArray;
@@ -16,37 +16,37 @@ public class BookText : MonoBehaviour {
 	private string lastRight = "bricks";
 	private string currentPage = "";
 	private MediaRetriever mr;
-
+	
 	// Use this for initialization
 	void Start () {
 		mr = GameObject.Find("Retriever").GetComponent<MediaRetriever> ();
 		currentMediaType = mr.getCurrentMediaType();
-
+		
 		if(currentMediaType == (int)MediaRetriever.MediaTypes.Magazine)
 			mr.loadMostRecentArticle(mr.currentTitleID, updateCurrentPages);
 		else if(currentMediaType == (int)MediaRetriever.MediaTypes.Book) {
 			currentBookArray = ResolveTextSize (mr.getCurrentBook(), 50);
 		}
-
+		
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		
 	}
-
+	
 	private string cleanBook(string text){
 		text = Regex.Replace (text, @"<[^>]+>|&nbsp;", " ").Trim ();
 		text = Regex.Replace (text, @"\s{2,}", " ");
 		currentArticle = text;
 		return text;
 	}
-
+	
 	private ArrayList getTextForCurrentPages(){
 		Debug.Log (currentLeftPage);
 		int minLine = currentLeftPage*linesPerPage;
 		ArrayList pagesTextArray = new ArrayList();
-
+		
 		if(currentMediaType == (int)MediaRetriever.MediaTypes.Magazine){
 			pagesTextArray = ResolveTextSize(currentArticle, 50); // TODO: limit range
 		} else if (currentMediaType == (int)MediaRetriever.MediaTypes.Book) {
@@ -54,15 +54,15 @@ public class BookText : MonoBehaviour {
 		}
 		currentLeftPage += 2;
 		return pagesTextArray;
-
+		
 	}
-
+	
 	public void updateCurrentPages(string text){
 		if(currentMediaType == (int)MediaRetriever.MediaTypes.Magazine){
 			currentArticle = cleanBook(text);
 		}
-//		displayPage("splinters");
-//		displayPage("rocks");
+		//		displayPage("splinters");
+		//		displayPage("rocks");
 		ArrayList pagesTextArray;
 		string pageText = string.Empty;
 		
@@ -70,7 +70,7 @@ public class BookText : MonoBehaviour {
 		switch(currentPage){
 		case "splinters":
 			mr.incrementArticle();
-
+			
 			pagesTextArray = getTextForCurrentPages();
 			lastRight = "splinters";
 			objectName = "PageTextRight";
@@ -86,7 +86,7 @@ public class BookText : MonoBehaviour {
 			
 		case "bricks":
 			mr.incrementArticle();
-
+			
 			pagesTextArray = getTextForCurrentPages();
 			lastRight = "bricks";
 			objectName = "PageTextRight2";
@@ -101,10 +101,10 @@ public class BookText : MonoBehaviour {
 			break;	
 		}
 		
-	
-
+		
+		
 	}
-
+	
 	public int indexOfNth(string str, string value, int nth = 1) {
 		int offset = str.IndexOf(value);
 		for (int i = 1; i < nth; i++)
@@ -114,9 +114,9 @@ public class BookText : MonoBehaviour {
 		}
 		return offset;
 	}
-
-
-
+	
+	
+	
 	public void displayPage(string pageName) {
 		if( pageName!=lastLeft && pageName!=lastRight ){
 			if(currentMediaType == (int)MediaRetriever.MediaTypes.Magazine){
@@ -127,41 +127,41 @@ public class BookText : MonoBehaviour {
 			else {
 				ArrayList pagesTextArray;// = getTextForCurrentPages();
 				string pageText = string.Empty;
-
+				
 				string objectName = "";
 				switch(pageName){
-					case "splinters":
-						pagesTextArray = getTextForCurrentPages();
-						lastRight = "splinters";
-						objectName = "PageTextRight";
-						pageText = string.Join("\n", (string[])pagesTextArray.GetRange(linesPerPage, linesPerPage - 1).ToArray(typeof(string)));
-						updatePage(objectName, pageText);
-
-						lastLeft = "rocks";
-						objectName = "PageTextLeft";
-						pageText = string.Join("\n", (string[])pagesTextArray.GetRange(0, linesPerPage - 1).ToArray(typeof(string)));
-						updatePage(objectName, pageText);
-
-						break;
-
-					case "bricks":
-						pagesTextArray = getTextForCurrentPages();
-						lastRight = "bricks";
-						objectName = "PageTextRight2";
-						pageText = string.Join ("\n", (string[])pagesTextArray.GetRange (linesPerPage, linesPerPage - 1).ToArray (typeof(string)));
-						updatePage(objectName, pageText);
-
-						lastLeft = "vuforia1";
-						objectName = "PageTextLeft2";
-						pageText = string.Join ("\n", (string[])pagesTextArray.GetRange (0, linesPerPage - 1).ToArray (typeof(string)));
-						updatePage(objectName, pageText);
-
-						break;	
+				case "splinters":
+					pagesTextArray = getTextForCurrentPages();
+					lastRight = "splinters";
+					objectName = "PageTextRight";
+					pageText = string.Join("\n", (string[])pagesTextArray.GetRange(linesPerPage, linesPerPage - 1).ToArray(typeof(string)));
+					updatePage(objectName, pageText);
+					
+					lastLeft = "rocks";
+					objectName = "PageTextLeft";
+					pageText = string.Join("\n", (string[])pagesTextArray.GetRange(0, linesPerPage - 1).ToArray(typeof(string)));
+					updatePage(objectName, pageText);
+					
+					break;
+					
+				case "bricks":
+					pagesTextArray = getTextForCurrentPages();
+					lastRight = "bricks";
+					objectName = "PageTextRight2";
+					pageText = string.Join ("\n", (string[])pagesTextArray.GetRange (linesPerPage, linesPerPage - 1).ToArray (typeof(string)));
+					updatePage(objectName, pageText);
+					
+					lastLeft = "vuforia1";
+					objectName = "PageTextLeft2";
+					pageText = string.Join ("\n", (string[])pagesTextArray.GetRange (0, linesPerPage - 1).ToArray (typeof(string)));
+					updatePage(objectName, pageText);
+					
+					break;	
 				}
 			}
 		}
 	}
-
+	
 	private void updatePage(string objectName, string pageText){
 		TextMesh tm = GameObject.Find(objectName).GetComponent<TextMesh> ();
 		tm.text = pageText;
@@ -178,16 +178,16 @@ public class BookText : MonoBehaviour {
 			currentBook = mr.getCurrentBook ();
 			currentLeftPage = 0;
 		}
-
+		
 		tm.text = mr.getCurrentTitle();
 		tm.richText = true;
 	}
-
+	
 	public void changeMediaType(){
 		mr = GetComponent<MediaRetriever> ();
 		mr.incrementMediaType();
 		mr.incrementTitle();
-
+		
 		if(currentMediaType == (int)MediaRetriever.MediaTypes.Magazine)
 			mr.loadMostRecentArticle(mr.currentTitleID, updateCurrentPages);
 		else if(currentMediaType == (int)MediaRetriever.MediaTypes.Book) {
@@ -195,7 +195,7 @@ public class BookText : MonoBehaviour {
 			currentLeftPage = 0;
 		}
 	}
-
+	
 	private ArrayList ResolveTextSize(string input, int lineLength){
 		
 		// Split string by char " "  
@@ -204,7 +204,7 @@ public class BookText : MonoBehaviour {
 		
 		// Prepare result
 		ArrayList result = new ArrayList();
-
+		
 		// Temp line string
 		string line = "";
 		
@@ -219,7 +219,7 @@ public class BookText : MonoBehaviour {
 				string temp = line + " " + s;
 				
 				// If line length is bigger than lineLength
-				 if(temp.Length > lineLength){
+				if(temp.Length > lineLength){
 					
 					// Append current line into result
 					result.Add(line);
@@ -231,7 +231,7 @@ public class BookText : MonoBehaviour {
 					line = temp;
 				}
 			}
-
+			
 		}
 		
 		// Append last line into result        
