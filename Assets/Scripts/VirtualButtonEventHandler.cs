@@ -23,37 +23,41 @@ public class VirtualButtonEventHandler : MonoBehaviour, IVirtualButtonEventHandl
 	// Update is called once per frame
 	public void OnButtonPressed (VirtualButtonAbstractBehaviour vb) {
 
-//		switch (vb.VirtualButtonName) {
-//			case "changePage":
-//			tm = transform.Find("PageText").GetComponent<TextMesh>();
-//			BookText ip = transform.Find("PageText").GetComponent<BookText>();
-//
-//			ip.changeBook();
-//			break;
-//			case "changeBook":
-//				//Texture2D p = new Texture2D(10, 10);
-//				Debug.Log ("OnButtonPressed called");
-//				Renderer r = GetComponent<MeshRenderer>();
-//				r.material = m_materials[bookMaterialIndex];
-//				bookMaterialIndex = bookMaterialIndex + 1;
-//				//p = Resources.Load("CatsCradleBook.Front", typeof(Texture2D)) as Texture2D;
-//				//		Plane plane = transform.Find ("Front").GetComponent<Plane>();
-//				//GameObject mt = GameObject.Find("MultiTarget");
-//				//Debug.Log(mt);
-//				//Transform go = mt.transform.Find("");
-////				if(go!=null){
-////					foreach(Component c in go.GetComponents<Component>()){
-////						Debug.Log(c);
-////					}
-//////					Material m = Resources.Load("CatsCradleBook.Front.mat", typeof(Material)) as Material;
-////					Renderer r = GetComponent<MeshRenderer>();
-////					r.material = m_materials[bookMaterialIndex];
-////					bookMaterialIndex = bookMaterialIndex + 1;
-//////					r.material =m;
-////				}
-//				break;
-//		}
-//
+		switch (vb.VirtualButtonName) {
+			case "changePage":
+			tm = transform.Find("PageText").GetComponent<TextMesh>();
+			BookText ip = transform.Find("PageText").GetComponent<BookText>();
+
+			ip.changeBook();
+			break;
+			case "changeBook":
+				//Texture2D p = new Texture2D(10, 10);
+				Debug.Log ("OnButtonPressed called");
+			Transform plane = transform.Find("Page");
+			Renderer r = plane.GetComponent<MeshRenderer>();
+				r.material = m_materials[bookMaterialIndex];
+				bookMaterialIndex = bookMaterialIndex + 1;
+			if (bookMaterialIndex == 2) {
+				bookMaterialIndex = 0;
+			}
+				//p = Resources.Load("CatsCradleBook.Front", typeof(Texture2D)) as Texture2D;
+				//		Plane plane = transform.Find ("Front").GetComponent<Plane>();
+				//GameObject mt = GameObject.Find("MultiTarget");
+				//Debug.Log(mt);
+				//Transform go = mt.transform.Find("");
+//				if(go!=null){
+//					foreach(Component c in go.GetComponents<Component>()){
+//						Debug.Log(c);
+//					}
+////					Material m = Resources.Load("CatsCradleBook.Front.mat", typeof(Material)) as Material;
+//					Renderer r = GetComponent<MeshRenderer>();
+//					r.material = m_materials[bookMaterialIndex];
+//					bookMaterialIndex = bookMaterialIndex + 1;
+////					r.material =m;
+//				}
+				break;
+		}
+
 	
 	}
 
