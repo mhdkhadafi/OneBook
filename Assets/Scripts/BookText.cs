@@ -115,9 +115,22 @@ public class BookText : MonoBehaviour {
 		tm.richText = true;
 	}
 
+	public void changeMediaType(){
+		MediaRetriever mr = GetComponent<MediaRetriever> ();
+		mr.incrementMediaType();
+		mr.incrementTitle();
+
+		if(currentMediaType == (int)MediaRetriever.MediaTypes.Magazine)
+			mr.loadMostRecentArticle(mr.currentTitleID, updateCurrentPages);
+		else if(currentMediaType == (int)MediaRetriever.MediaTypes.Book) {
+			currentBookArray = ResolveTextSize (mr.getCurrentBook(), 50);
+		}
+	}
+
 	private ArrayList ResolveTextSize(string input, int lineLength){
 		
-		// Split string by char " "         
+		// Split string by char " "  
+		input = input.Replace("\n", " \n ");
 		string[] words = input.Split(" "[0]);
 		
 		// Prepare result
@@ -128,21 +141,28 @@ public class BookText : MonoBehaviour {
 		
 		// for each all words        
 		foreach(string s in words){
-			// Append current word into line
-			string temp = line + " " + s;
-			
-			// If line length is bigger than lineLength
-			if(temp.Length > lineLength){
-				
-				// Append current line into result
+			if (s.Equals("\n")){
 				result.Add(line);
-				// Remain word append into new line
-				line = s;
+				line = "";
 			}
-			// Append current word into current line
 			else {
-				line = temp;
+				// Append current word into line
+				string temp = line + " " + s;
+				
+				// If line length is bigger than lineLength
+				 if(temp.Length > lineLength){
+					
+					// Append current line into result
+					result.Add(line);
+					// Remain word append into new line
+					line = s;
+				}
+				// Append current word into current line
+				else {
+					line = temp;
+				}
 			}
+
 		}
 		
 		// Append last line into result        
