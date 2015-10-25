@@ -30,10 +30,10 @@ public class MediaRetriever : MonoBehaviour {
 		currentMediaType = (int)MediaTypes.Magazine;
 		populateTitles();
 
-		if(currentMediaType == (int)MediaTypes.Magazine)
-			loadMostRecentArticle(currentTitleID, null);
-		else if(currentMediaType == (int)MediaTypes.Book)
-			loadBook(currentTitleID);
+//		if(currentMediaType == (int)MediaTypes.Magazine)
+//			loadMostRecentArticle(currentTitleID, null);
+//		else if(currentMediaType == (int)MediaTypes.Book)
+//			loadBook(currentTitleID);
 	}
 
 	// Update is called once per frame
@@ -126,7 +126,7 @@ public class MediaRetriever : MonoBehaviour {
 	}
 
 	public string getCurrentArticle(System.Action<string> onComplete){
-		if(!currentArticleLoading)
+		if(!currentArticleLoading && !currentArticleLoaded)
 			loadArticle(currentArticleID, currentTitleID, onComplete);
 		return currentArticleText;
 	}
@@ -147,7 +147,7 @@ public class MediaRetriever : MonoBehaviour {
 
 	}
 
-	private void loadMostRecentArticle(int titleID, System.Action<string> onComplete){
+	public void loadMostRecentArticle(int titleID, System.Action<string> onComplete){
 		string title = titles[currentMediaType][titleID];
 		string url = "https://" + title + ".hearst.io/api/v1/articles?visibility=1&all_images=0&get_image_cuts=0&ignore_cache=0&limit=1&order_by=date+desc&_key=" + apiKey;
 
@@ -156,9 +156,12 @@ public class MediaRetriever : MonoBehaviour {
 
 	private void extractArticle(System.Action<string> onComplete){
 		Debug.Log("article received");
+		Debug.Log (currentArticleLoaded);
+		Debug.Log (currentArticleLoading);
 		var js = JSON.Parse(currentArticle.text);
 		var item = js["items"][0];
 		var id = item["id"];
+
 		if(int.TryParse(id, out currentArticleID)){
 			currentArticleLoading = false;
 			currentArticleLoaded = true;
@@ -172,7 +175,7 @@ public class MediaRetriever : MonoBehaviour {
 	}
 
 
-	private void loadBook(int titleID){
+	public void loadBook(int titleID){
 		TextAsset bookText =(TextAsset)Resources.Load(titles[currentMediaType][titleID]);
 		currentBookText = bookText.text;
 		currentTitleID = titleID;

@@ -14,12 +14,14 @@ public class BookText : MonoBehaviour {
 	void Start () {
 		MediaRetriever mr = GameObject.Find("Retriever").GetComponent<MediaRetriever> ();
 		currentMediaType = mr.getCurrentMediaType();
-		if(currentMediaType == (int)MediaRetriever.MediaTypes.Magazine){
-			currentArticle = mr.getCurrentArticle (updateCurrentPages);
-		} else if (currentMediaType == (int)MediaRetriever.MediaTypes.Book) {
+		if (currentMediaType == (int)MediaRetriever.MediaTypes.Book) {
 			currentBook = mr.getCurrentBook();
 		}
 
+		if(currentMediaType == (int)MediaRetriever.MediaTypes.Magazine)
+			mr.loadMostRecentArticle(0, null);
+		else if(currentMediaType == (int)MediaRetriever.MediaTypes.Book)
+			mr.loadBook(0);
 	}
 
 	void Init () {
