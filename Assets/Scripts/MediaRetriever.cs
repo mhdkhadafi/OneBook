@@ -7,8 +7,8 @@ public class MediaRetriever : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		Debug.Log("Starting Media Retriever");
-		apiKey = System.IO.File.ReadAllText("Assets/Resources/hearstSecret.txt");
-		Debug.Log(apiKey);
+//		apiKey = System.IO.File.ReadAllText("Assets/Resources/hearstSecret.txt");
+//		Debug.Log(apiKey);
 		currentTitleID = 10;
 		currentMediaType = 0;
 		populateTitles();
@@ -31,7 +31,7 @@ public class MediaRetriever : MonoBehaviour {
 	private int currentPage = 0;
 	private string currentPageText;
 	private int linesPerPage = 50;
-	private string apiKey = "";
+	private string apiKey = "2dyz29j4caczfam4y3bd5cpc";
 	private WWW currentArticle;
 
 	enum MediaTypes {Magazine, Book};
