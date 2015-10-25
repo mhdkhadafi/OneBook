@@ -14,16 +14,11 @@ public class BookText : MonoBehaviour {
 	void Start () {
 		MediaRetriever mr = GameObject.Find("Retriever").GetComponent<MediaRetriever> ();
 		currentMediaType = mr.getCurrentMediaType();
-		if(currentMediaType == (int)MediaRetriever.MediaTypes.Magazine){
-			currentArticle = mr.getCurrentArticle (updateCurrentPages);
-		} else if (currentMediaType == (int)MediaRetriever.MediaTypes.Book) {
+
+		if(currentMediaType == (int)MediaRetriever.MediaTypes.Magazine)
+			mr.loadMostRecentArticle(mr.currentTitleID, updateCurrentPages);
+		else if(currentMediaType == (int)MediaRetriever.MediaTypes.Book)
 			currentBook = mr.getCurrentBook();
-		}
-
-	}
-
-	void Init () {
-
 
 	}
 	
@@ -40,7 +35,7 @@ public class BookText : MonoBehaviour {
 	}
 
 	private string getTextForCurrentPages(){
-		string pagesText = "";
+		string pagesText =  "Empty";
 		if(currentMediaType == (int)MediaRetriever.MediaTypes.Magazine){
 			pagesText = ResolveTextSize (currentArticle, 50); // TODO: limit range
 		} else if (currentMediaType == (int)MediaRetriever.MediaTypes.Book) {
@@ -69,6 +64,9 @@ public class BookText : MonoBehaviour {
 	}
 
 	public void displayPage(string pageName) {
+//		if(currentMediaType == (int)MediaRetriever.MediaTypes.Magazine){
+//			currentArticle = mr.getCurrentArticle (updateCurrentPages);
+//		} 
 
 		string pageText = getTextForCurrentPages();
 
