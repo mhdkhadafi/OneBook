@@ -6,26 +6,22 @@ public class BookText : MonoBehaviour {
 
 	public string location;
 	private string currentBook;
+	private ArrayList currentBookArray;
 	private string currentArticle;
 	private int currentLeftPage = 0;
+	private int linesPerPage = 30;
 	private int currentMediaType;
 
 	// Use this for initialization
 	void Start () {
 		MediaRetriever mr = GameObject.Find("Retriever").GetComponent<MediaRetriever> ();
 		currentMediaType = mr.getCurrentMediaType();
-		if (currentMediaType == (int)MediaRetriever.MediaTypes.Book) {
-			currentBook = mr.getCurrentBook();
-		}
 
 		if(currentMediaType == (int)MediaRetriever.MediaTypes.Magazine)
-			mr.loadMostRecentArticle(0, null);
-		else if(currentMediaType == (int)MediaRetriever.MediaTypes.Book)
-			mr.loadBook(0);
-	}
-
-	void Init () {
-
+			mr.loadMostRecentArticle(mr.currentTitleID, updateCurrentPages);
+		else if(currentMediaType == (int)MediaRetriever.MediaTypes.Book) {
+			currentBookArray = ResolveTextSize (mr.getCurrentBook(), 50);
+		}
 
 	}
 	
@@ -42,12 +38,16 @@ public class BookText : MonoBehaviour {
 	}
 
 	private string getTextForCurrentPages(){
-		string pagesText = "";
+		string pagesText = string.Empty;
+		int minLine = currentLeftPage*linesPerPage;
+		ArrayList pagesTextArray = new ArrayList();
+
 		if(currentMediaType == (int)MediaRetriever.MediaTypes.Magazine){
-			pagesText = ResolveTextSize (currentArticle, 50); // TODO: limit range
+			pagesTextArray = ResolveTextSize(currentArticle, 50); // TODO: limit range
 		} else if (currentMediaType == (int)MediaRetriever.MediaTypes.Book) {
-			pagesText = ResolveTextSize (currentBook, 50); // TODO: limit range
+			pagesTextArray = currentBookArray.GetRange(minLine, 2*linesPerPage);
 		}
+		pagesText = string.Join("/n", (string[])pagesTextArray.ToArray(typeof(string)));
 		return pagesText;
 
 	}
@@ -71,7 +71,11 @@ public class BookText : MonoBehaviour {
 	}
 
 	public void displayPage(string pageName) {
+//		if(currentMediaType == (int)MediaRetriever.MediaTypes.Magazine){
+//			currentArticle = mr.getCurrentArticle (updateCurrentPages);
+//		} 
 
+//		ArrayList pagesTextArray = getTextForCurrentPages();
 		string pageText = getTextForCurrentPages();
 
 		string objectName = "";
@@ -79,11 +83,14 @@ public class BookText : MonoBehaviour {
 		case "splinters":
 			objectName = "PageTextRight";
 			pageText = pageText.Substring (indexOfNth (pageText, "\n", 29)+1, indexOfNth (pageText, "\n", 29));
+//			pageText = string.Join("/n", (string[])pagesTextArray.GetRange(linesPerPage, linesPerPage - 1).ToArray(typeof(string)));
 			break;
 			
 		case "rocks":
 			objectName = "PageTextLeft";
 			pageText = pageText.Substring (0, indexOfNth (pageText, "\n", 29));
+//			pageText = string.Join("/n", (string[])pagesTextArray.GetRange(0, linesPerPage - 1).ToArray(typeof(string)));
+
 			break;
 			
 		}
@@ -110,15 +117,15 @@ public class BookText : MonoBehaviour {
 		tm.text = mr.getCurrentTitle();
 		tm.richText = true;
 	}
-	
-	private string ResolveTextSize(string input, int lineLength){
+
+	private ArrayList ResolveTextSize(string input, int lineLength){
 		
 		// Split string by char " "         
 		string[] words = input.Split(" "[0]);
 		
 		// Prepare result
-		string result = "";
-		
+		ArrayList result = new ArrayList();
+
 		// Temp line string
 		string line = "";
 		
@@ -131,7 +138,7 @@ public class BookText : MonoBehaviour {
 			if(temp.Length > lineLength){
 				
 				// Append current line into result
-				result += line + "\n";
+				result.Add(line);
 				// Remain word append into new line
 				line = s;
 			}
@@ -142,9 +149,8 @@ public class BookText : MonoBehaviour {
 		}
 		
 		// Append last line into result        
-		result += line;
+		result.Add(line);
 		
-		// Remove first " " char
-		return result.Substring(1,result.Length-1);
+		return result;
 	}
 }
