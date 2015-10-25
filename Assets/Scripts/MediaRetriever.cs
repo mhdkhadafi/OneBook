@@ -27,7 +27,7 @@ public class MediaRetriever : MonoBehaviour {
 		TextAsset mytxtData=(TextAsset)Resources.Load("hearstSecret");
 		apiKey = mytxtData.text;
 		currentTitleID = 0;
-		currentMediaType = (int)MediaTypes.Magazine;
+		currentMediaType = (int)MediaTypes.Book;
 		populateTitles();
 
 //		if(currentMediaType == (int)MediaTypes.Magazine)
