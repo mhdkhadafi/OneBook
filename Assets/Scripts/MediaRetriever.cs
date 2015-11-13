@@ -26,9 +26,9 @@ public class MediaRetriever : MonoBehaviour {
 		Debug.Log("Starting Media Retriever");
 		TextAsset mytxtData=(TextAsset)Resources.Load("hearstSecret");
 		apiKey = mytxtData.text;
+		populateTitles();
 		currentTitleID = 0;
 		currentMediaType = (int)MediaTypes.Book;
-		populateTitles();
 
 //		if(currentMediaType == (int)MediaTypes.Magazine)
 //			loadMostRecentArticle(currentTitleID, null);
@@ -61,9 +61,11 @@ public class MediaRetriever : MonoBehaviour {
 		                   "womansday"
 							};
 
-		string[] books = new string[]{"Frankenstein", 
-										"Ulysses"};
-
+		string[] books = new string[]{"Ulysses",
+										"threelittlepigs",
+										"alice",
+										"Frankenstein"};
+		
 		titles = new string[][]{magazines, books};
 	}
 
@@ -176,8 +178,10 @@ public class MediaRetriever : MonoBehaviour {
 
 
 	private void loadBook(int titleID){
-		TextAsset bookText =(TextAsset)Resources.Load(titles[currentMediaType][titleID]);
+		Debug.Log("Loading Book : " + titles[currentMediaType][titleID].ToString());
+		TextAsset bookText = Resources.Load(titles[currentMediaType][titleID], typeof(TextAsset)) as TextAsset;
 		currentBookText = bookText.text;
+		Debug.Log(currentBookText);
 		currentTitleID = titleID;
 	}
 	
