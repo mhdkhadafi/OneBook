@@ -33,13 +33,13 @@ public class VirtualButtonEventHandler : MonoBehaviour, IVirtualButtonEventHandl
 			case "changeBook":
 				//Texture2D p = new Texture2D(10, 10);
 				Debug.Log ("OnButtonPressed called");
-			Transform plane = transform.Find("Page");
-			Renderer r = plane.GetComponent<MeshRenderer>();
-				r.material = m_materials[bookMaterialIndex];
+				Transform plane = transform.Find("PageLeaves");
+				Renderer r = plane.GetComponent<MeshRenderer>();
 				bookMaterialIndex = bookMaterialIndex + 1;
-			if (bookMaterialIndex == 2) {
-				bookMaterialIndex = 0;
-			}
+				if (bookMaterialIndex == m_materials.Length) {
+					bookMaterialIndex = 0;
+				}
+				r.material = m_materials[bookMaterialIndex];
 				//p = Resources.Load("CatsCradleBook.Front", typeof(Texture2D)) as Texture2D;
 				//		Plane plane = transform.Find ("Front").GetComponent<Plane>();
 				//GameObject mt = GameObject.Find("MultiTarget");
