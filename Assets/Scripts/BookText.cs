@@ -14,6 +14,10 @@ public class BookText : MonoBehaviour {
 	private int currentMediaType;
 	private string lastLeft = "vuforia1";
 	private string lastRight = "bricks";
+	private string pageNumberLeft = "";
+	private string pageNumberRight = "";
+	static int pagesRead = 0;
+
 	private string currentPage = "";
 	private MediaRetriever mr;
 	
@@ -67,40 +71,40 @@ public class BookText : MonoBehaviour {
 		string pageText = string.Empty;
 		
 		string objectName = "";
-		switch(currentPage){
-		case "splinters":
-			mr.incrementArticle();
-			
-			pagesTextArray = getTextForCurrentPages();
-			lastRight = "splinters";
-			objectName = "PageTextRight";
-			pageText = string.Join("\n", (string[])pagesTextArray.GetRange(linesPerPage, linesPerPage - 1).ToArray(typeof(string)));
-			updatePage(objectName, pageText);
-			
-			lastLeft = "rocks";
-			objectName = "PageTextLeft";
-			pageText = string.Join("\n", (string[])pagesTextArray.GetRange(0, linesPerPage - 1).ToArray(typeof(string)));
-			updatePage(objectName, pageText);
-			
-			break;
-			
-		case "bricks":
-			mr.incrementArticle();
-			
-			pagesTextArray = getTextForCurrentPages();
-			lastRight = "bricks";
-			objectName = "PageTextRight2";
-			pageText = string.Join ("\n", (string[])pagesTextArray.GetRange (linesPerPage, linesPerPage - 1).ToArray (typeof(string)));
-			updatePage(objectName, pageText);
-			
-			lastLeft = "vuforia1";
-			objectName = "PageTextLeft2";
-			pageText = string.Join ("\n", (string[])pagesTextArray.GetRange (0, linesPerPage - 1).ToArray (typeof(string)));
-			updatePage(objectName, pageText);
-			
-			break;	
-		}
-		
+//		switch(currentPage){
+//		case "splinters":
+//			mr.incrementArticle();
+//			
+//			pagesTextArray = getTextForCurrentPages();
+//			lastRight = "splinters";
+//			objectName = "PageTextRight";
+//			pageText = string.Join("\n", (string[])pagesTextArray.GetRange(linesPerPage, linesPerPage - 1).ToArray(typeof(string)));
+//			updatePage(objectName, pageText);
+//			
+//			lastLeft = "rocks";
+//			objectName = "PageTextLeft";
+//			pageText = string.Join("\n", (string[])pagesTextArray.GetRange(0, linesPerPage - 1).ToArray(typeof(string)));
+//			updatePage(objectName, pageText);
+//			
+//			break;
+//			
+//		case "bricks":
+//			mr.incrementArticle();
+//			
+//			pagesTextArray = getTextForCurrentPages();
+//			lastRight = "bricks";
+//			objectName = "PageTextRight2";
+//			pageText = string.Join ("\n", (string[])pagesTextArray.GetRange (linesPerPage, linesPerPage - 1).ToArray (typeof(string)));
+//			updatePage(objectName, pageText);
+//			
+//			lastLeft = "vuforia1";
+//			objectName = "PageTextLeft2";
+//			pageText = string.Join ("\n", (string[])pagesTextArray.GetRange (0, linesPerPage - 1).ToArray (typeof(string)));
+//			updatePage(objectName, pageText);
+//			
+//			break;	
+//		}
+//		
 		
 		
 	}
@@ -134,13 +138,15 @@ public class BookText : MonoBehaviour {
 					pagesTextArray = getTextForCurrentPages();
 					lastRight = "edges_bw";
 					objectName = "PageTextEdges";
+					pageNumberRight = "PageNumberEdges";
 					pageText = string.Join("\n", (string[])pagesTextArray.GetRange(linesPerPage, linesPerPage - 1).ToArray(typeof(string)));
-					updatePage(objectName, pageText);
+					updatePage(objectName, pageText, pageNumberRight);
 					
 					lastLeft = "tarmac_bw";
 					objectName = "PageTextTarmac";
+					pageNumberLeft = "PageNumberTarmac";
 					pageText = string.Join("\n", (string[])pagesTextArray.GetRange(0, linesPerPage - 1).ToArray(typeof(string)));
-					updatePage(objectName, pageText);
+					updatePage(objectName, pageText, pageNumberLeft);
 					
 					break;
 					
@@ -148,13 +154,17 @@ public class BookText : MonoBehaviour {
 					pagesTextArray = getTextForCurrentPages();
 					lastRight = "polygons_bw";
 					objectName = "PageTextPolygons";
+					pageNumberRight = "PageNumberPolygons";
+
 					pageText = string.Join ("\n", (string[])pagesTextArray.GetRange (linesPerPage, linesPerPage - 1).ToArray (typeof(string)));
-					updatePage(objectName, pageText);
+					updatePage(objectName, pageText, pageNumberRight);
 					
 					lastLeft = "chips_bw";
 					objectName = "PageTextChips";
+					pageNumberLeft = "PageNumberChips";
+
 					pageText = string.Join ("\n", (string[])pagesTextArray.GetRange (0, linesPerPage - 1).ToArray (typeof(string)));
-					updatePage(objectName, pageText);
+					updatePage(objectName, pageText, pageNumberLeft);
 					
 					break;
 					
@@ -162,13 +172,17 @@ public class BookText : MonoBehaviour {
 					pagesTextArray = getTextForCurrentPages();
 					lastRight = "bricks_bw";
 					objectName = "PageTextBrick";
+					pageNumberRight = "PageNumberBrick";
+
 					pageText = string.Join ("\n", (string[])pagesTextArray.GetRange (linesPerPage, linesPerPage - 1).ToArray (typeof(string)));
-					updatePage(objectName, pageText);
+					updatePage(objectName, pageText, pageNumberRight);
 					
 					lastLeft = "rocks_bw";
 					objectName = "PageTextRocks";
+					pageNumberLeft = "PageNumberRocks";
+
 					pageText = string.Join ("\n", (string[])pagesTextArray.GetRange (0, linesPerPage - 1).ToArray (typeof(string)));
-					updatePage(objectName, pageText);
+					updatePage(objectName, pageText, pageNumberLeft);
 					
 					break;
 				}
@@ -176,9 +190,13 @@ public class BookText : MonoBehaviour {
 		}
 	}
 	
-	private void updatePage(string objectName, string pageText){
+	private void updatePage(string objectName, string pageText, string pageNumber){
 		TextMesh tm = GameObject.Find(objectName).GetComponent<TextMesh> ();
+		TextMesh pn = GameObject.Find(pageNumber).GetComponent<TextMesh> ();
+
 		tm.text = pageText;
+		pagesRead++;
+		pn.text = pagesRead.ToString();
 	}
 	
 	public void changeBook() {
