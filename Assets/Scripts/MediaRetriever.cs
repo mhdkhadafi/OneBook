@@ -24,8 +24,8 @@ public class MediaRetriever : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		Debug.Log("Starting Media Retriever");
-		TextAsset mytxtData=(TextAsset)Resources.Load("hearstSecret");
-		apiKey = mytxtData.text;
+//		TextAsset mytxtData=(TextAsset)Resources.Load("hearstSecret");
+//		apiKey = mytxtData.text;
 		populateTitles();
 		currentTitleID = 0;
 		currentMediaType = (int)MediaTypes.Book;

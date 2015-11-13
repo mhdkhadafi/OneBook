@@ -130,33 +130,47 @@ public class BookText : MonoBehaviour {
 				
 				string objectName = "";
 				switch(pageName){
-				case "splinters":
+				case "tarmac_bw":
 					pagesTextArray = getTextForCurrentPages();
-					lastRight = "splinters";
-					objectName = "PageTextRight";
+					lastRight = "edges_bw";
+					objectName = "PageTextEdges";
 					pageText = string.Join("\n", (string[])pagesTextArray.GetRange(linesPerPage, linesPerPage - 1).ToArray(typeof(string)));
 					updatePage(objectName, pageText);
 					
-					lastLeft = "rocks";
-					objectName = "PageTextLeft";
+					lastLeft = "tarmac_bw";
+					objectName = "PageTextTarmac";
 					pageText = string.Join("\n", (string[])pagesTextArray.GetRange(0, linesPerPage - 1).ToArray(typeof(string)));
 					updatePage(objectName, pageText);
 					
 					break;
 					
-				case "bricks":
+				case "chips_bw":
 					pagesTextArray = getTextForCurrentPages();
-					lastRight = "bricks";
-					objectName = "PageTextRight2";
+					lastRight = "polygons_bw";
+					objectName = "PageTextPolygons";
 					pageText = string.Join ("\n", (string[])pagesTextArray.GetRange (linesPerPage, linesPerPage - 1).ToArray (typeof(string)));
 					updatePage(objectName, pageText);
 					
-					lastLeft = "vuforia1";
-					objectName = "PageTextLeft2";
+					lastLeft = "chips_bw";
+					objectName = "PageTextChips";
 					pageText = string.Join ("\n", (string[])pagesTextArray.GetRange (0, linesPerPage - 1).ToArray (typeof(string)));
 					updatePage(objectName, pageText);
 					
-					break;	
+					break;
+					
+				case "rocks_bw":
+					pagesTextArray = getTextForCurrentPages();
+					lastRight = "bricks_bw";
+					objectName = "PageTextBrick";
+					pageText = string.Join ("\n", (string[])pagesTextArray.GetRange (linesPerPage, linesPerPage - 1).ToArray (typeof(string)));
+					updatePage(objectName, pageText);
+					
+					lastLeft = "rocks_bw";
+					objectName = "PageTextRocks";
+					pageText = string.Join ("\n", (string[])pagesTextArray.GetRange (0, linesPerPage - 1).ToArray (typeof(string)));
+					updatePage(objectName, pageText);
+					
+					break;
 				}
 			}
 		}
