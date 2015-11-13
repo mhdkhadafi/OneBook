@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
+  <Tracking>
+    <ImageTarget name="bricks_bw" size="1000.000000 1500.000000" />
+    <ImageTarget name="edges_bw" size="1000.000000 1500.000000" />
+    <ImageTarget name="chips_bw" size="1000.000000 1500.000000" />
+    <ImageTarget name="leaves_bw" size="1000.000000 1500.000000" />
+    <ImageTarget name="polygons_bw" size="1000.000000 1500.000000" />
+    <ImageTarget name="tarmac_bw" size="1000.000000 1500.000000" />
+    <ImageTarget name="rocks_bw" size="1000.000000 1500.000000" />
+    <ImageTarget name="static_bw" size="1000.000000 1500.000000" />
+  </Tracking>
+</QCARConfig>
