@@ -24,12 +24,6 @@ public class VirtualButtonEventHandler : MonoBehaviour, IVirtualButtonEventHandl
 	public void OnButtonPressed (VirtualButtonAbstractBehaviour vb) {
 
 		switch (vb.VirtualButtonName) {
-			case "changePage":
-			tm = transform.Find("PageText").GetComponent<TextMesh>();
-			BookText ip = transform.Find("PageText").GetComponent<BookText>();
-
-			ip.changeBook();
-			break;
 			case "changeBook":
 				//Texture2D p = new Texture2D(10, 10);
 				Debug.Log ("OnButtonPressed called");
@@ -40,6 +34,10 @@ public class VirtualButtonEventHandler : MonoBehaviour, IVirtualButtonEventHandl
 					bookMaterialIndex = 0;
 				}
 				r.material = m_materials[bookMaterialIndex];
+				
+				BookText bt = GameObject.Find("Retriever").GetComponent<BookText> ();
+				bt.changeBook();
+
 				//p = Resources.Load("CatsCradleBook.Front", typeof(Texture2D)) as Texture2D;
 				//		Plane plane = transform.Find ("Front").GetComponent<Plane>();
 				//GameObject mt = GameObject.Find("MultiTarget");

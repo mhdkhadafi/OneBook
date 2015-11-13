@@ -5,15 +5,15 @@ using System.Text.RegularExpressions;
 public class BookText : MonoBehaviour {
 	
 	public string location;
-	private string currentBook;
+//	private string currentBook;
 	private ArrayList currentBookArray;
 	private string currentArticle;
 	private int currentLeftPage = 0;
 	private int linesPerPage = 30;
 	private int charPerLine = 50;
 	private int currentMediaType;
-	private string lastLeft = "vuforia1";
-	private string lastRight = "bricks";
+	private string lastLeft = "";
+	private string lastRight = "";
 	private string pageNumberLeft = "";
 	private string pageNumberRight = "";
 	static int pagesRead = 0;
@@ -200,19 +200,22 @@ public class BookText : MonoBehaviour {
 	}
 	
 	public void changeBook() {
-		TextMesh tm = GameObject.Find("pageText").GetComponent<TextMesh> ();
+//		TextMesh tm = GameObject.Find("pageText").GetComponent<TextMesh> ();
 		
 		mr = GetComponent<MediaRetriever> ();
 		mr.incrementTitle();
 		if(currentMediaType == (int)MediaRetriever.MediaTypes.Magazine){
 			currentArticle = mr.getCurrentArticle (updateCurrentPages);
 		} else if (currentMediaType == (int)MediaRetriever.MediaTypes.Book) {
-			currentBook = mr.getCurrentBook ();
+//			currentBook = mr.getCurrentBook ();
+			currentBookArray = ResolveTextSize (mr.getCurrentBook(), 50);
+			lastLeft = "";
+			lastRight = "";
 			currentLeftPage = 0;
 		}
 		
-		tm.text = mr.getCurrentTitle();
-		tm.richText = true;
+//		tm.text = mr.getCurrentTitle();
+//		tm.richText = true;
 	}
 	
 	public void changeMediaType(){
